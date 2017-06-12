@@ -1,13 +1,9 @@
-#import urllib2
 from bs4 import BeautifulSoup
 import requests
-import sys
 import time
 
 print
 vidURL = raw_input("Enter URL - ").strip()
-#vidURL = "https://www.ciscolive.com/online/connect/sessionDetail.ww?SESSION_ID=4521&backBtn=true"
-#vidURL = 'https://www.ciscolive.com/online/connect/sessionDetail.ww?SESSION_ID=89232&backBtn=true'
 
 website_response_time_start = time.time()
 
@@ -20,15 +16,16 @@ sitecontent = r.content
 website_response_time_stop = time.time()
 
 print
-print "Website Response Time - %.1fsecs" % (website_response_time_stop-website_response_time_start)
+print "Website Response Time - %.1fsecs" % \
+    (website_response_time_stop-website_response_time_start)
 
 soup = BeautifulSoup(sitecontent, "html.parser")
 
 videourl = []
 
 for link in BeautifulSoup(sitecontent, "html.parser").findAll('a'):
-	if "data-url" in link.attrs:
-		videourl.append(link.attrs)
+    if "data-url" in link.attrs:
+        videourl.append(link.attrs)
 
 
 videourl = dict(videourl[0])
@@ -50,10 +47,12 @@ response = requests.get(videourl, stream=True)
 response.raise_for_status()
 
 with open(filename, 'wb') as handle:
-	for block in response.iter_content(1024):
-		handle.write(block)
+    for block in response.iter_content(1024):
+        handle.write(block)
 
 DownloadStop = time.time()
 
+print "Download Complete."
+print
 print "Download time - %.1fsecs" % (DownloadStop-DownloadStart)
 print
